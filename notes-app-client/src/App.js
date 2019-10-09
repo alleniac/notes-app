@@ -1,18 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar, Nav, NavItem } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import { LinkContainer } from 'react-router-bootstrap';
+import { Auth } from 'aws-amplify';
 import Routes from './Routes';
 import './App.css';
 
 export default function App() {
   const [ isAuthenticated, setIsAuthenticated ] = useState(false);
+  const [ isAuthenticating, setIsAuthenticating ] = useState(true);
 
-  function handleLogout() {
+  async function onLoad() {
+    try {
+      await Auth.currentSession();
+      setIsAuthenticated(true);
+    } catch (error) {
+      if (error !== 'No current user') {
+        alert(error);
+      }
+    }
+    setIsAuthenticating(false);
+  };
+
+  // componentDidMount
+  useEffect(() => {
+    onLoad();
+  }, []);
+
+  async function handleLogout() {
+    try {
+      await Auth.signOut();
+    } catch (error) {
+      alert(error);
+    }
     setIsAuthenticated(false);
   }
 
   return (
+    !isAuthenticating &&
     <div className="App container">
       <Navbar fluid collapseOnSelect>
         <Navbar.Header>
