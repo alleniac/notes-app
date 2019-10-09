@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { Auth } from 'aws-amplify';
 import './Login.css';
 
 class Login extends Component {
@@ -12,8 +13,15 @@ class Login extends Component {
         };
     }
 
-    handleSubmit = (e) => {
+    handleSubmit = async (e) => {
         e.preventDefault();
+
+        try {
+            await Auth.signIn(this.state.email, this.state.password);
+            alert('Logged in successfully.');
+        } catch (error) {
+            alert(error.message);
+        }
     }
 
     handleChange = (e) => {
