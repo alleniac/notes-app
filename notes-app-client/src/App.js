@@ -8,6 +8,10 @@ import './App.css';
 export default function App() {
   const [ isAuthenticated, setIsAuthenticated ] = useState(false);
 
+  function handleLogout() {
+    setIsAuthenticated(false);
+  }
+
   return (
     <div className="App container">
       <Navbar fluid collapseOnSelect>
@@ -19,12 +23,20 @@ export default function App() {
         </Navbar.Header>
         <Navbar.Collapse>
           <Nav pullRight>
-            <LinkContainer to='signup'>
-              <NavItem>Sign Up</NavItem>
-            </LinkContainer>
-            <LinkContainer to='login'>
-              <NavItem>Log In</NavItem>
-            </LinkContainer>
+            {
+              isAuthenticated
+                ? <NavItem onClick={ handleLogout }>Logout</NavItem>
+                : (
+                  <React.Fragment>
+                    <LinkContainer to='/signup'>
+                      <NavItem>Signup</NavItem>
+                    </LinkContainer>
+                    <LinkContainer to='/login'>
+                      <NavItem>Login</NavItem>
+                    </LinkContainer>
+                  </React.Fragment>
+                )
+            }
           </Nav>
         </Navbar.Collapse>
       </Navbar>
