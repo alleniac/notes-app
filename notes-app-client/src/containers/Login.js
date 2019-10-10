@@ -19,6 +19,7 @@ class Login extends Component {
         try {
             await Auth.signIn(this.state.email, this.state.password);
             this.props.setIsAuthenticated(true);
+            this.props.history.push('/');
         } catch (error) {
             alert(error.message);
         }

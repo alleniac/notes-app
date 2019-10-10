@@ -5,7 +5,7 @@ import Home from './containers/Home';
 import Login from './containers/Login';
 import NotFound from './containers/NotFound';
 
-export default function routes({ appProps }) {
+export default function Routes({ appProps }) {
     return (
         <Switch>
             <AppliedRoute path='/' exact component={ Home } appProps={ appProps }/>
