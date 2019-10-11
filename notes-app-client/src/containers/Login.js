@@ -1,74 +1,57 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 import { Auth } from 'aws-amplify';
 import './Login.css';
 
-class Login extends Component {
-    constructor(props) {
-        super(props);
+export default function Login(props) {
+    const [ email, setEmail ] = useState('');
+    const [ password, setPassword ] = useState('');
 
-        this.state = {
-            email: '',
-            password: ''
-        };
-    }
-
-    handleSubmit = async (e) => {
+    async function handleSubmit(e) {
         e.preventDefault();
 
         try {
-            await Auth.signIn(this.state.email, this.state.password);
-            this.props.setIsAuthenticated(true);
-            this.props.history.push('/');
+            await Auth.signIn(email, password);
+            props.setIsAuthenticated(true);
+            props.history.push('/');
         } catch (error) {
             alert(error.message);
         }
     }
 
-    handleChange = (e) => {
-        this.setState({
-            [e.target.id]: e.target.value
-        });
-    };
-
-    validateForm = () => {
-        return this.state.email.length > 0
-            && this.state.password.length > 0;
-    };
-
-    render() {
-        return (
-            <div className='Login'>
-                <form onSubmit={ this.handleSubmit }>
-                    <FormGroup controlId='email' bsSize='large'>
-                        <ControlLabel>Email</ControlLabel>
-                        <FormControl
-                            autoFocus
-                            type='email'
-                            value={ this.state.email }
-                            onChange={ this.handleChange }
-                        />
-                    </FormGroup>
-                    <FormGroup controlId='password' bsSize='large'>
-                        <ControlLabel>Password</ControlLabel>
-                        <FormControl
-                            type='password'
-                            value={ this.state.password }
-                            onChange={ this.handleChange }
-                        />
-                    </FormGroup>
-                    <Button
-                        block
-                        bsSize='large'
-                        type='submit'
-                        disabled={ !this.validateForm() }
-                    >
-                        Login
-                    </Button>
-                </form>
-            </div>
-        );
+    function validateForm() {
+        return email.length > 0 && password.length > 0;
     }
-}
 
-export default Login;
+    return (
+        <div className='Login'>
+            <form onSubmit={ handleSubmit }>
+                <FormGroup controlId='email' bsSize='large'>
+                    <ControlLabel>Email</ControlLabel>
+                    <FormControl
+                        autoFocus
+                        type='email'
+                        value={ email }
+                        onChange={ e => setEmail(e.target.value) }
+                    />
+                </FormGroup>
+                <FormGroup controlId='password' bsSize='large'>
+                    <ControlLabel>Password</ControlLabel>
+                    <FormControl
+                        type='password'
+                        value={ password }
+                        onChange={ e => setPassword(e.target.value) }
+                    />
+                </FormGroup>
+                <Button
+                    block
+                    bsSize='large'
+                    type='submit'
+                    disabled={ !validateForm() }
+                >
+                    Login
+                </Button>
+            </form>
+        </div>
+    );
+}
