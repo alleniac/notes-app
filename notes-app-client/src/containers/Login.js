@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
-import { Button, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import { FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+import LoaderButton from '../components/LoaderButton';
 import { Auth } from 'aws-amplify';
 import './Login.css';
 
 export default function Login(props) {
     const [ email, setEmail ] = useState('');
     const [ password, setPassword ] = useState('');
+    const [ isLoading, setIsLoading ] = useState(false);
 
     async function handleSubmit(e) {
         e.preventDefault();
+
+        setIsLoading(true);
 
         try {
             await Auth.signIn(email, password);
@@ -43,14 +47,15 @@ export default function Login(props) {
                         onChange={ e => setPassword(e.target.value) }
                     />
                 </FormGroup>
-                <Button
+                <LoaderButton
                     block
                     bsSize='large'
                     type='submit'
+                    isLoading={ isLoading }
                     disabled={ !validateForm() }
                 >
-                    Login
-                </Button>
+                    { isLoading ? 'Loading...' : 'Login' }    
+                </LoaderButton>
             </form>
         </div>
     );
