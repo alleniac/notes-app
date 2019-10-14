@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Auth } from 'aws-amplify';
 import LoaderButton from '../components/LoaderButton';
 import {
     FormGroup,
@@ -22,13 +23,33 @@ export default function Signup(props) {
     async function handleSubmit(e) {
         e.preventDefault();
         setIsLoading(true);
-        setNewUser('Test');
-        setIsLoading(false);
+        try {
+            const newUser = await Auth.signUp({
+                username: fields.email,
+                password: fields.password
+            });
+            setIsLoading(false);
+            setNewUser(newUser);
+        } catch (error) {
+            alert(error.message);
+            setIsLoading(false);
+        }
     }
 
     async function handleConfirmationSubmit(e) {
         e.preventDefault();
         setIsLoading(true);
+
+        try {
+            await Auth.confirmSignUp(fields.email, fields.confirmationCode);
+            await Auth.signIn(fields.email, fields.password);
+
+            props.setIsAuthenticated(true);
+            props.history.push('/');
+        } catch (error) {
+            alert(error.message);
+            setIsLoading(false);
+        }
     }
 
     function validateForm() {
